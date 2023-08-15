@@ -6,6 +6,7 @@ All the infrastructure provision on this project will be created following terra
 * Formatting files: `terraform fmt`
 * Validate configuration: `terraform validate`
 * Applying the configuration: `terraform apply`
+  * With variables: `terraform apply -var "variable_name=value"`
 * Checking state: `terraform state`
 * Destroy infrastructure: `terraform destroy`
 

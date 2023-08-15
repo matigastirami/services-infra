@@ -20,3 +20,21 @@ resource "aws_instance" "app_server" {
     name = var.instance_name
   }
 }
+
+#resource "aws_iam_role" "eks_cluster_role" {
+#  assume_role_policy = ""
+#
+#}
+#
+#resource "aws_eks_cluster" "services_cluster" {
+#  name     = "services_cluster"
+#  role_arn = aws_iam_role.eks_cluster_role.arn
+#  version  = "1.27"
+#  kubernetes_network_config {
+#    ip_family         = "0.0.0.0/0"
+#    service_ipv4_cidr = "WTF_IS_THIS"
+#  }
+#  vpc_config {
+#    subnet_ids {}
+#  }
+#}
