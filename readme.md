@@ -7,6 +7,7 @@ All the infrastructure provision on this project will be created following terra
 * Validate configuration: `terraform validate`
 * Applying the configuration: `terraform apply`
 * Checking state: `terraform state`
+* Destroy infrastructure: `terraform destroy`
 
 # Tips and info
 * The [terraform.tfstate](terraform.tfstate) file contains the infrastructure history along time
