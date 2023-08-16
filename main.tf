@@ -9,16 +9,41 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
+}
+
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+resource "aws_vpc" "services_vpc" {
 
 }
 
+resource "aws_security_group" "services_sec_group" {
+  name = "services_sec_group"
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_instance" "app_server" {
-  ami           = "ami-053b0d53c279acc90" # Ubuntu Server 22.04 LTS Free tier elegible
-  instance_type = "t2.micro"
+  ami           = var.ec2_ami
+  instance_type = var.ec2_instance_type
   tags = {
     name = var.instance_name
   }
+  security_groups = [aws_security_group.services_sec_group.id]
 }
 
 #resource "aws_iam_role" "eks_cluster_role" {
@@ -27,14 +52,16 @@ resource "aws_instance" "app_server" {
 #}
 #
 #resource "aws_eks_cluster" "services_cluster" {
-#  name     = "services_cluster"
+#  name     = var.eks_cluster_name
 #  role_arn = aws_iam_role.eks_cluster_role.arn
-#  version  = "1.27"
+#  version  = var.eks_kubernetes_version
 #  kubernetes_network_config {
 #    ip_family         = "0.0.0.0/0"
 #    service_ipv4_cidr = "WTF_IS_THIS"
 #  }
-#  vpc_config {
-#    subnet_ids {}
+#  vpc_config = {
+#    subnet_ids = {}
+#    security_group_ids = {}
 #  }
+#  enabled_cluster_log_types {}
 #}
