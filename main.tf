@@ -12,6 +12,15 @@ provider "aws" {
   region = var.aws_region
 }
 
+# TODO: check how to provide atlas instance
+provider "mongodbatlas" {
+  region = var.aws_region
+}
+
+locals {
+  name_suffix = "${var.resource_tags["project"]}-${var.resource_tags["environment"]}"
+}
+
 data "aws_availability_zones" "available" {
   state = "available"
 }
@@ -21,7 +30,7 @@ resource "aws_vpc" "services_vpc" {
 }
 
 resource "aws_security_group" "services_sec_group" {
-  name = "services_sec_group"
+  name = "services_sec_group-${local.name_suffix}"
   ingress {
     from_port   = 80
     to_port     = 80
@@ -37,11 +46,23 @@ resource "aws_security_group" "services_sec_group" {
   }
 }
 
+resource "mongodbatlas_database_user" "db_user" {
+  project_id = ""
+  username   = ""
+}
+
+resource "mongodbatlas_cluster" "mongodb_cluster" {
+  name                        = "db-cluster-${local.name_suffix}"
+  project_id                  = ""
+  provider_instance_size_name = ""
+  provider_name               = ""
+}
+
 resource "aws_instance" "app_server" {
   ami           = var.ec2_ami
   instance_type = var.ec2_instance_type
   tags = {
-    name = var.instance_name
+    name = "${var.instance_name}-${local.name_suffix}"
   }
   security_groups = [aws_security_group.services_sec_group.id]
 }

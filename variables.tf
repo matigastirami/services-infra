@@ -50,3 +50,18 @@ variable "eks_kubernetes_version" {
   type = string
   default = "1.27"
 }
+
+variable "this_cannot_be_shown" {
+  default = "This a sensitive value that won't be shown on apply preview"
+  type = string
+  sensitive = true
+}
+
+variable "resource_tags" {
+  description = "Tags for the resources that will be created"
+  type = map(string)
+  default = {
+    project = "services"
+    environment = "development"
+  }
+}
