@@ -12,6 +12,39 @@ provider "aws" {
   region = var.aws_region
 }
 
+resource "aws_ecr_repository" "users-service" {
+  name = "users-service"
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_subnet" "subnet" {
+  vpc_id = aws_vpc.services_vpc.id
+}
+
+// This data source makes the configuration deployable to any aws region
+// it can be referenced as `data.aws_availability_zones.available.names`
+// it's specially useful when sharing configurations between terraform workspaces
+data "aws_availability_zones" "available" {
+  state = "available"
+  filter {
+    name = "zone-type"
+    values = ["availability-zone"]
+  }
+}
+
+// This makes available the current region
+data "aws_region" "current" { }
+
+// This data block helps sharing data between workspaces/repositories
+data "terraform_remote_state" "vpc" {
+  backend = "local"
+  config = {
+    path = "path/to/tfstate/file/in/another/repo"
+  }
+}
+
 # TODO: check how to provide atlas instance
 provider "mongodbatlas" {
   region = var.aws_region
