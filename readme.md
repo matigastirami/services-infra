@@ -21,4 +21,18 @@ All the infrastructure provision on this project will be created following terra
 # Tips
 * When Terraform runs, it looks in your environment for variables that match the pattern TF_VAR_<VARIABLE_NAME>, and assigns those values to the corresponding Terraform variables in your configuration.
 >This can be useful in CI/CD environments
+* Use `lookup(var.map_var, value_to_find)` to do a map search by dynamic value
+```terraform
+variable "aws_amis" {
+  type = map
+  default = {
+    "us-east-1" = "ami-0739f8cdb239fe9ae"
+    "us-west-2" = "ami-008b09448b998a562"
+    "us-east-2" = "ami-0ebc8f6f580a04647"
+  }
+}
+
+# Then
+ami = lookup(var.aws_amis, var.aws_region)
+```
 * 
