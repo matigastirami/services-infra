@@ -4,4 +4,5 @@ module "eks_cluster" {
 
 module "mongodb_atlas" {
   source = "./modules/mongodb_atlas" # Adjust the path to your MongoDB Atlas module
+
 }

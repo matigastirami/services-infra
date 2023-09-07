@@ -1,24 +1,20 @@
-resource "mongodbatlas_cluster" "example" {
-  project_id           = "YOUR_PROJECT_ID"
-  name                 = "my-atlas-cluster"
-  provider_backup_enabled = true
+resource "mongodbatlas_project" "mongo_project" {
+  name   = var.mongodb_project_name
+  org_id = var.mongodb_organization_id
+}
 
-  cluster_type {
-    name = "M10"
-  }
+resource "mongodbatlas_cluster" "mongo_cluster" {
+  name = var.mongodb_cluster_name
+  project_id = mongodbatlas_project.mongo_project.id
+  # Provide shared cluster (free tier M0 instance)
+  provider_instance_size_name = "M0"
+  provider_name = "TENANT"
+  backing_provider_name = "AWS"
+  provider_region_name = "US_EAST_1"
+}
 
-  num_shards = 1
-  replication_factor = 3
-
-  region_name = "US_EAST_1"
-
-  auto_scaling {
-    disk_gb_enabled = true
-  }
-
-  maintenance_window {
-    day_of_week = "SUNDAY"
-    start_hour  = 10
-    start_minute = 0
-  }
+resource "mongodbatlas_database_user" "mongo_user" {
+  project_id = mongodbatlas_project.mongo_project.id
+  username   = var.mongodb_db_credentials.username
+  password = var.mongodb_db_credentials.password
 }
