@@ -35,4 +35,5 @@ variable "aws_amis" {
 # Then
 ami = lookup(var.aws_amis, var.aws_region)
 ```
+* Use conditional expressions as: `var.high_availability == true ? 3 : 1`
 * 
