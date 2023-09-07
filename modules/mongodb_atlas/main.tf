@@ -3,6 +3,7 @@ resource "mongodbatlas_project" "mongo_project" {
   org_id = var.mongodb_organization_id
 }
 
+# TODO: create private link between atlas vpc and services VPC (once the eks is ready)
 resource "mongodbatlas_cluster" "mongo_cluster" {
   name = var.mongodb_cluster_name
   project_id = mongodbatlas_project.mongo_project.id
