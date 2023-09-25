@@ -8,8 +8,8 @@ variable "aws_region" {
 variable "mongodb_atlas_keys" {
   type = map(string)
   default = {
-    public_key: "rabmlvaw",
-    private_key: "c2c3579d-40bb-4da2-bae9-b468a4b907a6"
+    public_key : "rabmlvaw",
+    private_key : "c2c3579d-40bb-4da2-bae9-b468a4b907a6"
   }
   description = "Name of the project in mongodb atlas"
 }

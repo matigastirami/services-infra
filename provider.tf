@@ -4,5 +4,5 @@ provider "aws" {
 
 provider "mongodbatlas" {
   private_key = var.mongodb_atlas_keys.private_key
-  public_key = var.mongodb_atlas_keys.public_key
+  public_key  = var.mongodb_atlas_keys.public_key
 }
