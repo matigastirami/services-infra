@@ -1,7 +1,8 @@
-# How to Terraform
-All the infrastructure provision on this project will be created following terraform official docs
+# Services Infrastructure
+This repository contains all the necessary TF code to deploy a complete infrastructure to AWS, including an EKS cluster, 
+a VPC and its security groups, apart from a mongodb atlas M0 cluster (free tier).
 
-# Commands
+## Useful commands
 * Installing all the providers/plugins: `terraform init` (similar to npm install)
 * Formatting files: `terraform fmt`
 * Validate configuration: `terraform validate`
@@ -13,27 +14,13 @@ All the infrastructure provision on this project will be created following terra
 * Check what is going to be changed beforehand: `terraform plan`
 * Use `-json` flag to format the outputs: `terraform output -json`
 
-# Files explanation
+## Files explanation
 * The [terraform.tfstate](terraform.tfstate) file contains the infrastructure history along time (sensitive information)
 * The [.terraform.lock.hcl](.terraform.lock.hcl) contains all the version references for providers (Similar to package-lock.json)
 * The [terraform.tfvars](terraform.tfvars) file contains all the variables like a `.env`
 
-# Tips
-* When Terraform runs, it looks in your environment for variables that match the pattern TF_VAR_<VARIABLE_NAME>, and assigns those values to the corresponding Terraform variables in your configuration.
->This can be useful in CI/CD environments
-* Use `lookup(var.map_var, value_to_find)` to do a map search by dynamic value
-```terraform
-variable "aws_amis" {
-  type = map
-  default = {
-    "us-east-1" = "ami-0739f8cdb239fe9ae"
-    "us-west-2" = "ami-008b09448b998a562"
-    "us-east-2" = "ami-0ebc8f6f580a04647"
-  }
-}
-
-# Then
-ami = lookup(var.aws_amis, var.aws_region)
-```
-* Use conditional expressions as: `var.high_availability == true ? 3 : 1`
-* 
+## TO-DO
+* Find a place to store the `tfstate` file (S3?)
+* Find a way to store sensitive values as credentials and keys (Secrets manager?)
+* Provision EKS cluster and security group
+* Provision S3 bucket for users-service
