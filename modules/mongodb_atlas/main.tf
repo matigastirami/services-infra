@@ -36,7 +36,6 @@ resource "random_password" "mongodb-user-password" {
 resource "mongodbatlas_project_ip_access_list" "mongo_access_list" {
   project_id = mongodbatlas_project.mongo_project.id
   count = length(var.mongodb_ip_access_list)
-  # ip_address = var.mongodb_ip_access_list[count.index]
   cidr_block = var.mongodb_ip_access_list[count.index]
   comment = "What IPs can reach the database server"
 }
