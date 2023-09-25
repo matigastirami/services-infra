@@ -1,11 +1,20 @@
+locals {
+  tags = {
+    environment = "development"
+    terraform   = true
+  }
+}
 module "services_vpc" {
   source                = "./modules/vpc"
   private_subnets_count = 1
   public_subnets_count  = 1
-  tags = {
-    environment = "development"
-    terraform = true
-  }
+  tags                  = local.tags
+}
+
+module "security_group" {
+  source = "./modules/security_group"
+  vpc_id = module.services_vpc.vpc_id
+  tags   = local.tags
 }
 
 #module "eks_cluster" {
