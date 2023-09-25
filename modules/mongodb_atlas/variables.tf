@@ -1,31 +1,23 @@
-variable "mongodb_project_name" {
-  type = string
-  default = "services-dev-project"
-  description = "Name of the project in mongodb atlas"
-}
-
-variable "mongodb_organization_id" {
-  type = string
-  description = "Name of the mongodb atlas organization (Mandatory)"
-  default = "5a0f19594e658110663ae8da"
-}
-
-variable "mongodb_cluster_name" {
-  type = string
-  default = "services-dev-cluster"
-  description = "Name of the mongodb cluster"
-}
-
 variable "mongodb_ip_access_list" {
   type = list(string)
-  default = ["0.0.0.0/0"],
+  default = ["0.0.0.0/0"]
+  description = "cidr block"
 }
 
 variable "mongodb_db_credentials" {
   type = map(string)
   default = {
     username: "services-dev-user"
-    password: "services-dev-user" # TODO: how to use secrets manager here?
+    password: "services-dev-pass" # TODO: how to use secrets manager here instead of providing a random one?
   }
   description = "Name of the mongodb cluster"
+}
+
+variable "mongo_db_atlas_configuration" {
+  description = "Configuration for the mongodb atlas cluster and db"
+  type = object({
+    mongo_db_atlas_project_name = optional(string, "no-project-name-specified"),
+    mongo_db_organization_id = string,
+    mongo_db_cluster_name = optional(string, "no-cluster-name-specified")
+  })
 }
