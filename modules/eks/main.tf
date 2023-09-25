@@ -1,11 +1,3 @@
-module "vpc" {
-  source = "../vpc" # Adjust the path to your VPC module
-}
-
-module "security_group" {
-  source = "../security_group" # Adjust the path to your Security Group module
-}
-
 resource "aws_eks_cluster" "my_cluster" {
   name     = "my-cluster"
   role_arn = aws_iam_role.eks_cluster_role.arn
