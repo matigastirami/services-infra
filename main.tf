@@ -17,6 +17,12 @@ module "security_group" {
   tags   = local.tags
 }
 
+module "eks_cluster" {
+  source = "./modules/eks",
+  private_subnet_ids = module.services_vpc.private_subnets_ids,
+  security_group_id = ""
+}
+
 #module "eks_cluster" {
 #  source = "./modules/eks"
 #}

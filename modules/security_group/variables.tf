@@ -8,4 +8,10 @@ variable "tags" {
 
 variable "vpc_id" {
   description = "The ID of the VPC this sec group will be available for"
+  type = string
+}
+
+variable "eks_cluster_cidr_block" {
+  default = "CIDR block of the EKS cluster"
+  type = string
 }
