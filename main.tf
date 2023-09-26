@@ -27,6 +27,12 @@ module "ecr_repositories" {
   source = "./modules/ecr"
 }
 
+#module "cicd_tools_jenkins" {
+#  source = "./modules/jenkins",
+#  namespace = "cicd-tools",
+#  jenkins_chart_version = "4.6.5"
+#}
+
 #module "dev_free_tier_mongodb" {
 #  source = "./modules/mongodb_atlas"
 #  mongo_db_atlas_configuration = {
