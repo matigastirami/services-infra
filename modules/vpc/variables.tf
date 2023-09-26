@@ -6,14 +6,22 @@ variable "tags" {
   })
 }
 
-variable "private_subnets_count" {
-  description = "How much private subnets should this module provide"
-  type = number
-  default = 1
+variable "private_subnets_az" {
+  description = "Availability zones for the private subnets"
+  type = list(string)
+  default = ["us-east-1a", "us-east-1b"]
+  validation {
+    condition = length(var.private_subnets_az) >= 2
+    error_message = "You must provide at least 2 availability zones for your private subnets"
+  }
 }
 
-variable "public_subnets_count" {
-  description = "How much public subnets should this module provide"
-  type = number
-  default = 1
+variable "public_subnets_az" {
+  description = "Availability zones for the public subnets"
+  type = list(string)
+  default = ["us-east-1a", "us-east-1b"]
+  validation {
+    condition = length(var.public_subnets_az) >= 2
+    error_message = "You must provide at least 2 availability zones for your public subnets"
+  }
 }

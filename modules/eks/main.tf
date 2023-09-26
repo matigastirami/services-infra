@@ -9,7 +9,7 @@ resource "aws_eks_cluster" "services_cluster" {
 
 resource "aws_eks_node_group" "services_nodes" {
   cluster_name    = aws_eks_cluster.services_cluster.name
-  node_group_name = "my-node-group"
+  node_group_name = "services-node-group"
   node_role_arn   = aws_iam_role.eks_node_role.arn
 
   launch_template {
@@ -41,6 +41,24 @@ resource "aws_iam_role" "eks_cluster_role" {
   })
 }
 
+resource "aws_iam_policy_attachment" "eks_cluster_policy_attachment" {
+  name       = "AmazonEKSClusterPolicyAttachment"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  roles      = [aws_iam_role.eks_cluster_role.name]
+}
+
+resource "aws_iam_policy_attachment" "eks_worker_node_policy_attachment" {
+  name       = "AmazonEKSWorkerNodePolicyAttachment"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  roles      = [aws_iam_role.eks_node_role.name]
+}
+
+resource "aws_iam_policy_attachment" "ecr_read_only_policy_attachment" {
+  name       = "AmazonEC2ContainerRegistryReadOnlyAttachment"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  roles      = [aws_iam_role.eks_node_role.name]
+}
+
 resource "aws_iam_role" "eks_node_role" {
   name = "eks_node_role"
   assume_role_policy = jsonencode({
@@ -61,4 +79,25 @@ resource "aws_launch_template" "eks_launch_template" {
   // Example: instance_type, AMI, key_name, user_data, etc.
   instance_type = "t2.micro"
 
+  block_device_mappings {
+    device_name = "/dev/xvda"
+
+    ebs {
+      volume_size = 20 # Adjust the volume size as needed
+      volume_type = "gp2"
+    }
+  }
+
+  network_interfaces {
+    associate_public_ip_address = true # Enable if you want public IP addresses
+  }
+
+  tag_specifications {
+    resource_type = "instance"
+
+    tags = {
+      Name = "eks-node"
+      # Add more tags as needed
+    }
+  }
 }

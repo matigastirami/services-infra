@@ -6,17 +6,17 @@ resource "aws_vpc" "services_vpc" {
 }
 
 resource "aws_subnet" "private_subnet" {
-  count = var.private_subnets_count > 0 ? var.private_subnets_count : 1
+  count = length(var.private_subnets_az)
   cidr_block = "10.0.${count.index}.0/24"
   vpc_id = aws_vpc.services_vpc.id
-  availability_zone = "us-east-1a"
+  availability_zone = var.private_subnets_az[count.index]
   tags = var.tags
 }
 
 resource "aws_subnet" "public_subnet" {
-  count = var.private_subnets_count > 0 ? var.private_subnets_count : 1
+  count = length(var.public_subnets_az)
   cidr_block = "10.0.${count.index + 2}.0/24"
   vpc_id = aws_vpc.services_vpc.id
-  availability_zone = "us-east-1a"
+  availability_zone = var.public_subnets_az[count.index]
   tags = var.tags
 }

@@ -4,10 +4,9 @@ locals {
     terraform   = true
   }
 }
+
 module "services_vpc" {
   source                = "./modules/vpc"
-  private_subnets_count = 1
-  public_subnets_count  = 1
   tags                  = local.tags
 }
 
@@ -24,9 +23,9 @@ module "eks_cluster" {
   security_group_id  = module.security_group.eks_security_group_id
 }
 
-#module "eks_cluster" {
-#  source = "./modules/eks"
-#}
+module "ecr_repositories" {
+  source = "./modules/ecr"
+}
 
 #module "dev_free_tier_mongodb" {
 #  source = "./modules/mongodb_atlas"
