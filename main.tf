@@ -12,15 +12,16 @@ module "services_vpc" {
 }
 
 module "security_group" {
-  source = "./modules/security_group"
-  vpc_id = module.services_vpc.vpc_id
-  tags   = local.tags
+  source                 = "./modules/security_group"
+  vpc_id                 = module.services_vpc.vpc_id
+  tags                   = local.tags
+  eks_cluster_cidr_block = module.services_vpc.vpc_cidr_block
 }
 
 module "eks_cluster" {
-  source = "./modules/eks",
-  private_subnet_ids = module.services_vpc.private_subnets_ids,
-  security_group_id = ""
+  source             = "./modules/eks"
+  private_subnet_ids = module.services_vpc.private_subnets_ids
+  security_group_id  = module.security_group.eks_security_group_id
 }
 
 #module "eks_cluster" {

@@ -10,7 +10,7 @@ resource "aws_security_group_rule" "eks_intra_cluster" {
   from_port   = 0 # Allow all ports for intra-cluster communication
   to_port     = 65535 # TODO: Adjust the port range as needed
   protocol    = "tcp" # TODO: Adjust the port range as needed
-  cidr_blocks = ["<CIDR_BLOCK_OF_EKS_CLUSTER>"] # Replace with your EKS cluster CIDR block
+  cidr_blocks = [var.eks_cluster_cidr_block] # Replace with your EKS cluster CIDR block
   security_group_id = aws_security_group.eks_sg.id
 }
 

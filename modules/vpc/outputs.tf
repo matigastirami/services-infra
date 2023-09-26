@@ -3,5 +3,9 @@ output "vpc_id" {
 }
 
 output "private_subnets_ids" {
-  value = var.private_subnets_count > 1 ? aws_subnet.private_subnet[*].id : aws_subnet.private_subnet.id
+  value = aws_subnet.private_subnet[*].id
+}
+
+output "vpc_cidr_block" {
+  value = aws_vpc.services_vpc.cidr_block
 }
