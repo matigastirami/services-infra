@@ -3,18 +3,20 @@ locals {
     environment = "development"
     terraform   = true
   }
+  vpc_cidr_block = "10.0.0.0/16"
 }
 
 module "services_vpc" {
-  source                = "./modules/vpc"
-  tags                  = local.tags
+  source         = "./modules/vpc"
+  tags           = local.tags
+  vpc_cidr_block = local.vpc_cidr_block
 }
 
 module "security_group" {
   source                 = "./modules/security_group"
   vpc_id                 = module.services_vpc.vpc_id
   tags                   = local.tags
-  eks_cluster_cidr_block = module.services_vpc.vpc_cidr_block
+  eks_cluster_cidr_block = local.vpc_cidr_block
 }
 
 module "eks_cluster" {

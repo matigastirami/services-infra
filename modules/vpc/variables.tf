@@ -25,3 +25,9 @@ variable "public_subnets_az" {
     error_message = "You must provide at least 2 availability zones for your public subnets"
   }
 }
+
+variable "vpc_cidr_block" {
+  description = "CIDR block for the VPC"
+  type = string
+  default = "10.0.0.0/16"
+}
