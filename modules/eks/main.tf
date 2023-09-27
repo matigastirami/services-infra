@@ -102,7 +102,7 @@ resource "aws_launch_template" "eks_launch_template" {
   }
 }
 
-resource "aws_cloudwatch_log_group" "example" {
+resource "aws_cloudwatch_log_group" "eks_api_logs" {
   # The log group name format is /aws/eks/<cluster-name>/cluster
   # Reference: https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
   name              = "/aws/eks/${aws_eks_cluster.services_cluster.name}/cluster"
