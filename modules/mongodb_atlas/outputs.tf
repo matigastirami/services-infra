@@ -16,5 +16,5 @@ output "username" {
 
 output "user_password" {
   sensitive = true
-  value = mongodbatlas_database_user.mongo_user.password
+  value     = mongodbatlas_database_user.mongo_user.password
 }

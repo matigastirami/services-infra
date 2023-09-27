@@ -2,10 +2,10 @@ resource "aws_eks_cluster" "services_cluster" {
   name     = "services_cluster"
   role_arn = aws_iam_role.eks_cluster_role.arn
   vpc_config {
-    subnet_ids = flatten(var.private_subnet_ids)
+    subnet_ids         = flatten(var.private_subnet_ids)
     security_group_ids = [var.security_group_id]
   }
-  enabled_cluster_log_types = ["api"]
+  enabled_cluster_log_types = ["api", "audit"]
 }
 
 resource "aws_eks_node_group" "services_nodes" {
@@ -13,7 +13,7 @@ resource "aws_eks_node_group" "services_nodes" {
   node_group_name = "${aws_eks_cluster.services_cluster.name}-node-group"
   node_role_arn   = aws_iam_role.eks_node_role.arn
   launch_template {
-    id = aws_launch_template.eks_launch_template.id
+    id      = aws_launch_template.eks_launch_template.id
     version = "$Latest"
   }
   # TODO: extend this for future scalability
@@ -82,7 +82,7 @@ resource "aws_launch_template" "eks_launch_template" {
   // Define your EC2 instance configuration here
   // Example: instance_type, AMI, key_name, user_data, etc.
   instance_type = "t2.micro"
-  image_id = "ami-053b0d53c279acc90"
+  image_id      = "ami-053b0d53c279acc90"
   block_device_mappings {
     device_name = "/dev/xvda"
     ebs {
@@ -100,6 +100,15 @@ resource "aws_launch_template" "eks_launch_template" {
       # Add more tags as needed
     }
   }
+  user_data = base64encode(<<-EOF
+              #!/bin/bash
+              # Install and configure CloudWatch Logs agent
+              sudo apt-get update
+              sudo apt-get install -y awslogs
+              systemctl start awslogsd
+              systemctl enable awslogsd
+              EOF
+  )
 }
 
 resource "aws_cloudwatch_log_group" "eks_api_logs" {
@@ -107,4 +116,9 @@ resource "aws_cloudwatch_log_group" "eks_api_logs" {
   # Reference: https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
   name              = "/aws/eks/${aws_eks_cluster.services_cluster.name}/cluster"
   retention_in_days = 1
+}
+
+resource "aws_cloudwatch_log_group" "instance_logs" {
+  name              = "/ec2/${aws_eks_node_group.services_nodes.node_group_name}"
+  retention_in_days = 1 # Adjust the retention period as needed
 }
