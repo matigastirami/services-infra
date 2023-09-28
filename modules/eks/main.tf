@@ -6,6 +6,10 @@ resource "aws_eks_cluster" "services_cluster" {
     security_group_ids = [var.security_group_id]
   }
   enabled_cluster_log_types = ["api", "audit"]
+
+  depends_on = [
+    aws_iam_policy_attachment.eks_cluster_policy_attachment
+  ]
 }
 
 resource "aws_eks_node_group" "services_nodes" {
@@ -23,7 +27,11 @@ resource "aws_eks_node_group" "services_nodes" {
     min_size     = 1
   }
   subnet_ids = flatten(var.private_subnet_ids)
-
+  depends_on = [
+    aws_iam_policy_attachment.ecr_read_only_policy_attachment,
+    aws_iam_policy_attachment.eks_worker_node_policy_attachment,
+    aws_iam_role_policy_attachment.eks_cni_policy_attachment
+  ]
 }
 
 resource "aws_iam_role" "eks_cluster_role" {
@@ -41,19 +49,19 @@ resource "aws_iam_role" "eks_cluster_role" {
 }
 
 resource "aws_iam_policy_attachment" "eks_cluster_policy_attachment" {
-  name       = "AmazonEKSClusterPolicyAttachment"
+  name       = "AmazonEKSClusterPolicy"
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   roles      = [aws_iam_role.eks_cluster_role.name]
 }
 
 resource "aws_iam_policy_attachment" "eks_worker_node_policy_attachment" {
-  name       = "AmazonEKSWorkerNodePolicyAttachment"
+  name       = "AmazonEKSWorkerNodePolicy"
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   roles      = [aws_iam_role.eks_node_role.name]
 }
 
 resource "aws_iam_policy_attachment" "ecr_read_only_policy_attachment" {
-  name       = "AmazonEC2ContainerRegistryReadOnlyAttachment"
+  name       = "AmazonEC2ContainerRegistryReadOnly"
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   roles      = [aws_iam_role.eks_node_role.name]
 }
@@ -81,8 +89,9 @@ resource "aws_launch_template" "eks_launch_template" {
   name_prefix = "eks-node-launch-template-"
   // Define your EC2 instance configuration here
   // Example: instance_type, AMI, key_name, user_data, etc.
+
   instance_type = "t2.micro"
-  image_id      = "ami-053b0d53c279acc90"
+  image_id      = "ami-03a6eaae9938c858c"
   block_device_mappings {
     device_name = "/dev/xvda"
     ebs {
@@ -100,15 +109,11 @@ resource "aws_launch_template" "eks_launch_template" {
       # Add more tags as needed
     }
   }
-  user_data = base64encode(<<-EOF
-              #!/bin/bash
-              # Install and configure CloudWatch Logs agent
-              sudo apt-get update
-              sudo apt-get install -y awslogs
-              systemctl start awslogsd
-              systemctl enable awslogsd
-              EOF
-  )
+  user_data = base64encode(templatefile("${path.module}/templates/configure-ec2.tpl", {
+    EKS_CLUSTER_NAME = aws_eks_cluster.services_cluster.name
+    API_SERVER_URL = aws_eks_cluster.services_cluster.endpoint
+    B64_CLUSTER_CA = aws_eks_cluster.services_cluster.certificate_authority[0].data
+  }))
 }
 
 resource "aws_cloudwatch_log_group" "eks_api_logs" {
@@ -116,9 +121,10 @@ resource "aws_cloudwatch_log_group" "eks_api_logs" {
   # Reference: https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
   name              = "/aws/eks/${aws_eks_cluster.services_cluster.name}/cluster"
   retention_in_days = 1
+  skip_destroy      = false
 }
 
-resource "aws_cloudwatch_log_group" "instance_logs" {
-  name              = "/ec2/${aws_eks_node_group.services_nodes.node_group_name}"
-  retention_in_days = 1 # Adjust the retention period as needed
+# Create a log group with the instance ID in the name
+resource "aws_cloudwatch_log_group" "instance_log_group" {
+  name = "/aws/ec2/${aws_eks_node_group.services_nodes.id}"
 }
