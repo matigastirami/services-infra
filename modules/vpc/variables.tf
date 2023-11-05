@@ -31,3 +31,9 @@ variable "vpc_cidr_block" {
   type        = string
   default     = "10.0.0.0/16"
 }
+
+variable "cluster_name" {
+  description = "Name for the EKS cluster under this VPC"
+  type = string
+  default = "services-cluster"
+}

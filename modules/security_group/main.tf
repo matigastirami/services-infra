@@ -26,8 +26,8 @@ resource "aws_security_group_rule" "eks_external_access" {
 resource "aws_security_group_rule" "eks_egress" {
   type              = "egress"
   from_port         = 0     # TODO: Adjust the port range as needed
-  to_port           = 65535 # TODO: Adjust the port range as needed
-  protocol          = "tcp"
+  to_port           = 0 # TODO: Adjust the port range as needed
+  protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"] # Allow all outbound traffic (restrict as needed)
   security_group_id = aws_security_group.eks_sg.id
 }

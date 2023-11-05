@@ -22,7 +22,7 @@ module "security_group" {
 module "eks_cluster" {
   source             = "./modules/eks"
   private_subnet_ids = module.services_vpc.private_subnets_ids
-  security_group_id  = module.security_group.eks_security_group_id
+  security_group_id  = module.services_vpc.vpc_sec_group_id
 }
 
 module "ecr_repositories" {

@@ -2,11 +2,12 @@ resource "aws_eks_cluster" "services_cluster" {
   name     = "services_cluster"
   role_arn = aws_iam_role.eks_cluster_role.arn
   vpc_config {
-    subnet_ids         = flatten(var.private_subnet_ids)
+    subnet_ids         = var.private_subnet_ids
     security_group_ids = [var.security_group_id]
+    endpoint_private_access = true
+    endpoint_public_access = true
   }
   enabled_cluster_log_types = ["api", "audit"]
-
   depends_on = [
     aws_iam_policy_attachment.eks_cluster_policy_attachment
   ]
@@ -100,7 +101,7 @@ resource "aws_launch_template" "eks_launch_template" {
     }
   }
   network_interfaces {
-    associate_public_ip_address = false # Enable if you want public IP addresses
+    associate_public_ip_address = true # Enable if you want public IP addresses
   }
   tag_specifications {
     resource_type = "instance"
