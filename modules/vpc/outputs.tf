@@ -1,19 +1,15 @@
-output "vpc_id" {
-  value = module.vpc.vpc_id
+output "env_name" {
+  value = local.env_name
 }
-
-output "private_subnets_ids" {
-  value = module.vpc.private_subnets
+output "vpc_cidr" {
+  value = var.vpc_params.vpc_cidr
 }
-
-#output "public_subnets_ids" {
-#  value = aws_subnet.public_subnet[*].id
-#}
-
-output "vpc_sec_group_id" {
-  value = module.vpc.default_security_group_id
+output "vpc_public_subnets" {
+  value = [module.subnet_addrs.network_cidr_blocks["public-1"], module.subnet_addrs.network_cidr_blocks["public-2"]]
 }
-
-output "vpc_cidr_block" {
-  value = module.vpc.vpc_cidr_block
+output "vpc_private_subnets" {
+  value = [module.subnet_addrs.network_cidr_blocks["private-1"], module.subnet_addrs.network_cidr_blocks["private-2"]]
+}
+output "vpc_intra_subnets" {
+  value = [module.subnet_addrs.network_cidr_blocks["intra-1"], module.subnet_addrs.network_cidr_blocks["intra-2"]]
 }
