@@ -2,7 +2,11 @@
 This repository contains all the necessary TF code to deploy a complete infrastructure to AWS, including an EKS cluster, 
 a VPC and its security groups, apart from a mongodb atlas M0 cluster (free tier).
 
-## Useful commands
+# Software needed
+* [Terraform](http://replace-this-link.com)
+* [Terragrunt](https://terragrunt.gruntwork.io/docs/getting-started/install/)
+
+## Useful commands TF
 * Installing all the providers/plugins: `terraform init` (similar to npm install)
 * Formatting files: `terraform fmt`
 * Validate configuration: `terraform validate`
@@ -24,3 +28,9 @@ a VPC and its security groups, apart from a mongodb atlas M0 cluster (free tier)
 * Find a way to store sensitive values as credentials and keys (Secrets manager?)
 * Provision EKS cluster and security group
 * Provision S3 bucket for users-service
+
+# Terragrunt
+* Use `terragrunt init` to initialize configurations
+* Use `terragrunt apply` to create the infrastructure in your cloud
+* Use `terragrunt run-all destroy` to destroy multiple configurations (i.e. all the environments at the same time [does run-all works for apply?])
+* 
