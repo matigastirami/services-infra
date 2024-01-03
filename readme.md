@@ -6,6 +6,20 @@ a VPC and its security groups, apart from a mongodb atlas M0 cluster (free tier)
 * [Terraform](http://replace-this-link.com)
 * [Terragrunt](https://terragrunt.gruntwork.io/docs/getting-started/install/)
 
+# How to provide infrastructure
+1. Make sure you have TF and Terragrunt installed
+2. cd into some environment folder (example `cd environment/dev`)
+3. Run `terragrunt run-all init` to start repositories (TODO: manage remote state in a S3 bucket)
+4. Run `terragrunt run-all apply` to create the infrastructure
+
+# How to destroy the infrastructure
+1. cd into some environment folder (example `cd environment/dev`)
+2. Run `terragrunt run-all destroy`
+
+# About terragrunt
+* Terragrunt `run-all` make sure the dependency tree is created in order, so there is no need to go module by module executing the apply command
+
+
 ## Useful commands TF
 * Installing all the providers/plugins: `terraform init` (similar to npm install)
 * Formatting files: `terraform fmt`
