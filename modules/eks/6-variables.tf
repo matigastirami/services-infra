@@ -32,12 +32,14 @@ variable "node_iam_policies" {
 variable "node_groups" {
   description = "EKS node groups"
   type = object({
-    capacity_type = string
-    instance_type = list(string)
-    scaling_config = object({
-      desired_size = number
-      max_size = number
-      min_size = number
+    general = object({
+      capacity_type = string
+      instance_type = list(string)
+      scaling_config = object({
+        desired_size = number
+        max_size = number
+        min_size = number
+      })
     })
   })
 }
