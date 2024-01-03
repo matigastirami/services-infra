@@ -18,7 +18,13 @@ a VPC and its security groups, apart from a mongodb atlas M0 cluster (free tier)
 
 # About terragrunt
 * Terragrunt `run-all` make sure the dependency tree is created in order, so there is no need to go module by module executing the apply command
+* When running plan, some modules requires for example a real EKS instance (Helm module). We can by-pass that by using `--terragrunt-excluder-dir kubernetes-addons`
 
+# Connecting to the cluster 
+
+## kubectl
+1. `aws eks update-kubeconfig --name ${env_name} --region ${region}` (aws-cli needed)
+2. `kubectl get nodes`
 
 ## Useful commands TF
 * Installing all the providers/plugins: `terraform init` (similar to npm install)
