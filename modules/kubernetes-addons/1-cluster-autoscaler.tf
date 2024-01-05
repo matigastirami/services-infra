@@ -5,7 +5,7 @@ data "aws_iam_openid_connect_provider" "this" {
 data "aws_iam_policy_document" "cluster_autoscaler" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
-    effect = "Allow"
+    effect  = "Allow"
 
     condition {
       test     = "StringEquals"
@@ -14,17 +14,17 @@ data "aws_iam_policy_document" "cluster_autoscaler" {
     }
 
     principals {
-      type = "Federated"
+      type        = "Federated"
       identifiers = [data.aws_iam_openid_connect_provider.this.arn]
     }
   }
 }
 
 resource "aws_iam_role" "cluster_autoscaler" {
-  count  = var.enable_cluster_autoscaler ? 1 : 0
+  count = var.enable_cluster_autoscaler ? 1 : 0
 
   assume_role_policy = data.aws_iam_policy_document.cluster_autoscaler.json
-  name = "${var.eks_name}-cluster-autoscaler"
+  name               = "${var.eks_name}-cluster-autoscaler"
 }
 
 resource "aws_iam_policy" "cluster_autoscaler" {
@@ -44,7 +44,7 @@ resource "aws_iam_policy" "cluster_autoscaler" {
           "autoscaling:DescribeInstanceTypes",
           "autoscaling:DescribeLaunchTemplateVersions",
         ],
-        Effect = "Allow"
+        Effect   = "Allow"
         Resource = "*"
       },
       {
@@ -52,7 +52,7 @@ resource "aws_iam_policy" "cluster_autoscaler" {
           "autoscaling:SetDesiredCapacity",
           "autoscaling:TerminateInstanceInAutoScalingGroup",
         ],
-        Effect = "Allow"
+        Effect   = "Allow"
         Resource = "*"
       }
     ]
@@ -62,18 +62,18 @@ resource "aws_iam_policy" "cluster_autoscaler" {
 resource "aws_iam_role_policy_attachment" "cluster_autoscaler" {
   count = var.enable_cluster_autoscaler ? 1 : 0
 
-  role = aws_iam_role.cluster_autoscaler[0].name
+  role       = aws_iam_role.cluster_autoscaler[0].name
   policy_arn = aws_iam_role.cluster_autoscaler[0].arn
 }
 
 resource "helm_release" "cluster_autoscaler" {
   count = var.enable_cluster_autoscaler ? 1 : 0
 
-  name = "autoscaler"
-  repository = "https://kubernetes.github.io/autoscaler",
-  chart = "cluster-autoscaler"
-  namespace = "kube-system"
-  version = var.cluster_autoscaler_helm_version
+  name       = "autoscaler"
+  repository = "https://kubernetes.github.io/autoscaler"
+  chart      = "cluster-autoscaler"
+  namespace  = "kube-system"
+  version    = var.cluster_autoscaler_helm_version
 
   set {
     name  = "rbac.serviceAccount.name"

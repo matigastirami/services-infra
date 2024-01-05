@@ -26,6 +26,10 @@ a VPC and its security groups, apart from a mongodb atlas M0 cluster (free tier)
 1. `aws eks update-kubeconfig --name ${env_name} --region ${region}` (aws-cli needed)
 2. `kubectl get nodes`
 
+## Managing state
+* State is saved to a S3 bucket that must be manually created
+* Also need a DynamoDB table to avoid having problems when many team members try to run the infra changes at once
+
 ## Useful commands TF
 * Installing all the providers/plugins: `terraform init` (similar to npm install)
 * Formatting files: `terraform fmt`

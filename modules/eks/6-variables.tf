@@ -1,26 +1,26 @@
 variable "env" {
   description = "Environment name"
-  type = string
+  type        = string
 }
 
 variable "eks_version" {
   description = "What version of K8s are you going to use?"
-  type = string
+  type        = string
 }
 
 variable "eks_name" {
   description = "Name of the cluster"
-  type = string
+  type        = string
 }
 
 variable "subnet_ids" {
   description = "List of subnet IDs. At lease 2 different AZs must be provided"
-  type = list(string)
+  type        = list(string)
 }
 
 variable "node_iam_policies" {
   description = "List of IAM policies to attach to EKS-managed nodes"
-  type = map(any)
+  type        = map(any)
   default = {
     1 = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
     2 = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
@@ -37,8 +37,8 @@ variable "node_groups" {
       instance_type = list(string)
       scaling_config = object({
         desired_size = number
-        max_size = number
-        min_size = number
+        max_size     = number
+        min_size     = number
       })
     })
   })
@@ -46,6 +46,6 @@ variable "node_groups" {
 
 variable "enable_irsa" {
   description = "Determines if an OpenID connect provider must be created"
-  type = bool
-  default = true
+  type        = bool
+  default     = true
 }

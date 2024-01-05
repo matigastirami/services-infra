@@ -3,7 +3,7 @@ resource "aws_route_table" "private" {
 
   // Uses the nat gateway as default route
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.this.id
   }
 
@@ -17,7 +17,7 @@ resource "aws_route_table" "public" {
 
   // Uses the nat gateway as default route
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.this.id
   }
 
@@ -27,13 +27,13 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table_association" "private" {
-  count = length(var.private_subnets)
+  count          = length(var.private_subnets)
   route_table_id = aws_route_table.private.id
-  subnet_id = aws_subnet.private[count.index].id
+  subnet_id      = aws_subnet.private[count.index].id
 }
 
 resource "aws_route_table_association" "public" {
-  count = length(var.public_subnets)
+  count          = length(var.public_subnets)
   route_table_id = aws_route_table.public.id
-  subnet_id = aws_subnet.public[count.index].id
+  subnet_id      = aws_subnet.public[count.index].id
 }

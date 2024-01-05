@@ -10,7 +10,7 @@ resource "aws_eip" "this" {
 
 resource "aws_nat_gateway" "this" {
   // It must be place in one of the public subnets with an igw
-  subnet_id = aws_subnet.public[0].id
+  subnet_id     = aws_subnet.public[0].id
   allocation_id = aws_eip.this.id
 
   tags = {

@@ -1,11 +1,11 @@
 resource "aws_eks_node_group" "this" {
   for_each = var.node_groups
 
-  cluster_name  = aws_eks_cluster.this.name
+  cluster_name    = aws_eks_cluster.this.name
   node_group_name = each.key
-  subnet_ids = var.subnet_ids
-  capacity_type = each.value.capacity_type
-  instance_types = each.value.instance_type
+  subnet_ids      = var.subnet_ids
+  capacity_type   = each.value.capacity_type
+  instance_types  = each.value.instance_type
 
   node_role_arn = aws_iam_role.nodes.arn
 
