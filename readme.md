@@ -58,3 +58,7 @@ a VPC and its security groups, apart from a mongodb atlas M0 cluster (free tier)
 * Use `terragrunt apply` to create the infrastructure in your cloud
 * Use `terragrunt run-all destroy` to destroy multiple configurations (i.e. all the environments at the same time [does run-all works for apply?])
 * 
+
+# AWS local configuration
+* Create a local profile by executing `aws configure --profile {profile-name}`
+* Use the local profile by execution `export AWS_PROFILE={profile-name}`
